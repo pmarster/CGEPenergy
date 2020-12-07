@@ -1,0 +1,28 @@
+[12-Nov-2018 21:23:52 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function get_header() in /home4/carbonfe/public_html/wp-content/themes/html5blank-stable/index.php:1
+Stack trace:
+#0 {main}
+  thrown in /home4/carbonfe/public_html/wp-content/themes/html5blank-stable/index.php on line 1
+[10-Dec-2018 08:22:32 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function get_header() in /home4/carbonfe/public_html/wp-content/themes/html5blank-stable/index.php:1
+Stack trace:
+#0 {main}
+  thrown in /home4/carbonfe/public_html/wp-content/themes/html5blank-stable/index.php on line 1
+[19-Dec-2018 12:30:40 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function get_header() in /home4/carbonfe/public_html/wp-content/themes/html5blank-stable/index.php:1
+Stack trace:
+#0 {main}
+  thrown in /home4/carbonfe/public_html/wp-content/themes/html5blank-stable/index.php on line 1
+[22-Dec-2018 08:49:23 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function get_header() in /home4/carbonfe/public_html/wp-content/themes/html5blank-stable/index.php:1
+Stack trace:
+#0 {main}
+  thrown in /home4/carbonfe/public_html/wp-content/themes/html5blank-stable/index.php on line 1
+[06-Mar-2019 20:09:18 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function get_header() in /home4/carbonfe/public_html/wp-content/themes/html5blank-stable/index.php:1
+Stack trace:
+#0 {main}
+  thrown in /home4/carbonfe/public_html/wp-content/themes/html5blank-stable/index.php on line 1
+[02-May-2019 13:13:16 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function get_header() in /home4/carbonfe/public_html/wp-content/themes/html5blank-stable/index.php:1
+Stack trace:
+#0 {main}
+  thrown in /home4/carbonfe/public_html/wp-content/themes/html5blank-stable/index.php on line 1
+[09-Jun-2019 02:26:41 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function get_header() in /home4/carbonfe/public_html/wp-content/themes/html5blank-stable/index.php:1
+Stack trace:
+#0 {main}
+  thrown in /home4/carbonfe/public_html/wp-content/themes/html5blank-stable/index.php on line 1

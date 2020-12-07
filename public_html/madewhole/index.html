@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Display a map</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+<script src="https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.js"></script>
+<link href="https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.css" rel="stylesheet" />
+<style>
+	body { margin: 0; padding: 0; }
+	#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+</style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+	mapboxgl.accessToken = 'pk.eyJ1IjoicG1hcnN0ZXIiLCJhIjoiY2pvMGV0eHhiMDAzMjN3cWloN2ZoemZqbSJ9.BD5MfCq12aN29vrDfKd7uw';
+var map = new mapboxgl.Map({
+container: 'map', // container id
+style: 'mapbox://styles/pmarster/cjovtn84h7m3l2rlqofedvd49', // stylesheet location
+center: [-74.5, 40], // starting position [lng, lat]
+zoom: 3.5 // starting zoom
+});
+
+// Code for the intro tour using intro.js
+var intro = introJs();
+intro.setOptions({
+steps: [
+  { 
+    intro: "Welcome to Carbonfee Map. Take the tour!"
+  },
+  { 
+    intro: "This Map shows the annual carbon fee for every household in the United States."
+  },
+  {
+    element: document.querySelector('#modal2'),
+    intro: "Enter any U.S. 5-digit zipcode to display the annual carbon fee for that location."
+  },
+  {
+    element: document.querySelectorAll('#layer_selector')[0],
+    intro: "Use the attribute selector to display emissions information for different sub-categories.",
+    position: 'right'
+  },
+  {
+    element: '#carbon-legend',
+    intro: 'Use the legend to help determine the annual carbon fee for each household.',
+    position: 'left'
+  },
+  {
+    element: '#search-btn',
+    intro: "At any point open the zipcode search to find information on another zipcode.",
+    position: 'bottom'
+  }  
+]
+});
+    
+intro.start();
+</script>
+ 
+</body>
+</html>
+
+
+

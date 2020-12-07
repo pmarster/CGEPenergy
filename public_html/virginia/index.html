@@ -1,0 +1,449 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8' />
+  <title>Cost per Household of an Virginia Carbon Price</title>
+  <!--Import Google Icon Font-->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!--Import materialize.css-->
+   <!-- Compiled and minified CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <!--Let browser know website is optimized for mobile-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>    
+  <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">    
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.51.0/mapbox-gl.js'></script>
+  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.51.0/mapbox-gl.css' rel='stylesheet' /> 
+     
+  <style>
+body { margin:0; padding:0; }
+#map { 
+position:absolute; top:0; bottom:0; width:100%; margin-top: 56px;
+}
+.geocoder {
+  position:absolute;
+  z-index:1;
+  width:50%;
+  left:60%;
+  margin-left:-25%;
+  top:80px;
+}
+.mapboxgl-ctrl-geocoder { min-width:100%; }  
+nav {
+height: 56px;
+line-height: 56px;
+background-color: #696969; 	
+}
+.modal-overlay {
+z-index: -1 !important;
+opacity: 0 !important;    
+}  
+ut:not([type]), input[type=text]:not(.browser-default), input[type=password]:not(.browser-default), input[type=email]:not(.browser-default), input[type=url]:not(.browser-default), input[type=time]:not(.browser-default), input[type=date]:not(.browser-default), input[type=datetime]:not(.browser-default), input[type=datetime-local]:not(.browser-default), input[type=tel]:not(.browser-default), input[type=number]:not(.browser-default), input[type=search]:not(.browser-default), textarea.materialize-textarea {
+    -webkit-box-sizing: inherit !important; 
+}
+.select-wrapper {
+  width: 20% !important;
+  left: 30%;
+}
+.demo { 
+  position: absolute;
+  padding-left: 20px !important;
+  z-index: 9999999999999 !important;
+}
+.legend {
+background-color: rgba(255, 255, 255);;
+border-radius: 3px;
+top: 200px;
+box-shadow: 0 1px 2px rgba(0,0,0,0.10);
+font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+padding: 10px;
+position: absolute;
+right: 10px;         
+}
+.legend h4 {
+    margin: 0 0 10px;
+    font-size: 18px;
+}
+
+.legend div span {
+    border-radius: 0%;
+    display: inline-block;    
+    margin-right: 10px;
+    width: 15px;
+    height: 20px;      
+}
+.search {
+  position: absolute;
+  top: 165px;
+  right: 10px;      
+  background-color:rgba(255,255,255);
+  margin-left:0;
+  border-radius:4px 4px 4px;
+  box-shadow: 0px 0px 0px 2px rgba(0, 0, 0, 0.1);       
+  width:30px;
+  height:30px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url('searchbutton.svg') ; 
+  background-size: 20px 20px;    
+  cursor: pointer;    
+  
+}
+.search:hover {
+  background-color:rgba(220,220,220, 1);          
+}
+#legend-bar {
+  background-image: linear-gradient(to top, blue, orange, red);
+  position: absolute;
+  right: 86px;
+  top: 237px;
+  height: 80px;
+  width: 20px;
+  z-index: 9;              
+}       
+  </style>
+</head>
+<body>
+<script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.3.0/mapbox-gl-geocoder.min.js'></script>
+<link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.3.0/mapbox-gl-geocoder.css' type='text/css' />  
+<script src='https://api.mapbox.com/mapbox.js/plugins/turf/v2.0.2/turf.min.js'></script> 
+  
+ <nav>
+    <div class="nav-wrapper">        
+        <a href="#" class="brand-logo" style="font-size: 25px;">Cost per Household of an Virginia Carbon Price</a>       
+      <ul id="nav-mobile" class="right hide-on-med-and-down">        
+      </ul>
+    </div>
+  </nav>    
+    
+<div id='map'></div>
+<div id="legend-bar"></div>    
+<div id='low-legend' class='legend'>
+    <h4>Annual Carbon Fee per Household</h4>    
+    <div><span style='background-color: rgba(0,0,0,0);'></span>300</div>
+    <div><span style='background-color: rgba(0,0,0,0);'></span>200</div>
+    <div><span style='background-color: rgba(0,0,0,0);'></span>100</div>    
+</div>
+<div id='medium-legend' class='legend'>
+    <h4>Annual Carbon Fee per Household</h4>
+    <div><span style='background-color: rgba(0,0,0,0);'></span>600</div>
+    <div><span style='background-color: rgba(0,0,0,0);'></span>400</div>
+    <div><span style='background-color: rgba(0,0,0,0);'></span>200</div>    
+</div>
+<div id='high-legend' class='legend'>
+    <h4>Annual Carbon Fee per Household</h4>
+    <div><span style='background-color: rgba(0,0,0,0);'></span>900</div>
+    <div><span style='background-color: rgba(0,0,0,0);'></span>600</div>
+    <div><span style='background-color: rgba(0,0,0,0);'></span>300</div>    
+</div>        
+<div class="demo">
+    <label for="amount" style="font-weight:bold;">COST:</label>
+    <input type="text" id="amount" style="border:0; color:#f6931f; font-weight:bold;" />
+<div id="slider-vertical" style="height:200px;"></div>
+</div>    
+<div id='search-btn' class='search'></div>     
+<div id="modal1" class="modal bottom-sheet">
+<div class="modal-content">
+    <b><span id="ziplabel"> Cost of Emissions for Zipcode: </span><span id="zipcode"></span></b><br>
+    <span id="carblabel"> Total Carbon: </span><span id="totalcarb"></span>
+    <span id="electlabel"> Electricity: </span><span id="electricity"></span>
+    <span id="translabel"> Transportation: </span><span id="trans"></span>
+    <span id="cooklabel"> Cooking: </span><span id="cooking"></span>
+    <span id="otherlabel"> Other Economy-Wide Emissions: </span><span id="other"></span>
+</div>
+<div class="modal-footer">
+  <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">CLOSE</a>
+</div>
+</div>
+<div id="modal2" class="modal">
+  <div class="modal-content">
+      <h5><center>Find Cost of Carbon by Virginia Zip Code (ex. 20121)</center></h5>
+    <div id='geocoder' class='geocoder'></div>
+  </div>
+  <div class="modal-footer">
+    <a href="#!" class="modal-close waves-effect waves-green btn-flat">CLOSE</a>
+  </div>
+</div>     
+    
+<script>
+mapboxgl.accessToken = 'pk.eyJ1IjoicG1hcnN0ZXIiLCJhIjoiY2pvMGV0eHhiMDAzMjN3cWloN2ZoemZqbSJ9.BD5MfCq12aN29vrDfKd7uw';
+const map = new mapboxgl.Map({
+  container: 'map',
+  style: 'mapbox://styles/pmarster/cjq8916ygd5ag2rnzmaipbcgn',
+  center: [-77.137, 38.822],
+  zoom: 8
+});
+
+// Open the modal prompt for zip code on page load    
+$(document).ready(function(){
+    $('#modal2').modal();
+    $('#modal2').modal('open');     
+  });    
+    
+$( "#slider-vertical" ).slider({
+    orientation: "vertical",
+    range: "min",
+    min: 1,
+    max: 3,
+    value: 1,
+    slide: function( event, ui ) {        
+       // $( "#amount" ).val( ui.value );
+    }
+});
+
+// Clicking on the search button opens the zip code prompt
+$('#search-btn').click(function(){
+    $('#modal2').modal('open'); 
+});     
+    
+// Add the building footprints layer to the map
+    
+// Assign legends to variables
+var legendLow = document.getElementById('low-legend');
+var legendMed = document.getElementById('medium-legend'); 
+var legendHigh = document.getElementById('high-legend');  
+    
+// Add zoom and rotation controls to the map.
+map.addControl(new mapboxgl.NavigationControl());   
+    
+// Get the bounds of the layer to limit the geocoder results   
+var bbox = map.getBounds('virginia-geo'); 
+    
+var geocoder = new MapboxGeocoder({
+    accessToken: mapboxgl.accessToken,    
+    zoom: 8,
+    minLength: 5,
+    limit: 5,
+    bbox: [-124.5664, 41.9920, -116.4633, 46.2938], // replace this with the bbox of the state
+    types: 'postcode',
+    placeholder: "Enter a Zip Code."
+}); 
+
+// Variables for low, medium, and high emissions heatmaps
+// numeric stop values correspond to breaks in data values    
+var emissions_low_style = [
+  'interpolate',
+  ['linear'],
+  ['get', 'Total_Carb'],
+  100,
+  'blue',
+  200,
+  'orange',
+  300,
+  'red'  
+];
+    
+var emissions_med_style = [
+  'interpolate',
+  ['linear'],
+  ['get', 'Total_Car2'],
+  200,
+  'blue',
+  400,
+  'orange',
+  600,
+  'red'  
+];    
+
+var emissions_high_style = [
+  'interpolate',
+  ['linear'],
+  ['get', 'Total_Car3'],
+  300,
+  'blue',
+  600,
+  'orange',
+  900,
+  'red'  
+];    
+
+
+/*// This is the old style of setting paint properties with stops
+// was incorrect but will save for potential future use    
+var emissions_high_style = { "property": 'Total_Car3',
+                        "type": "interval",
+                              "stops": [
+                                [21, 'red'],
+                                [65, 'red'],
+                                [108, 'red'],                                
+                               ]
+                        }; */     
+
+// Add the geocoder control to an existing div    
+document.getElementById('geocoder').appendChild(geocoder.onAdd(map));    
+    
+// Change the heatmap and attributes according to the value of the slider
+$( "#slider-vertical" ).on( "slidechange", function( event, ui ) {
+    //console.log($("#amount").val($("#slider-vertical").slider( "value" ) )); 
+    if (ui.value == 1) {
+         legendLow.style.display = 'block';
+         legendMed.style.display = 'none';
+         legendHigh.style.display = 'none';        
+         $('#amount').val('Low');
+         console.log($('#amount').val());        
+         map.setPaintProperty('virginia-geo', 'fill-color', emissions_low_style);         
+    } else if (ui.value == 2) {
+        legendLow.style.display = 'none';
+        legendMed.style.display = 'block';
+        legendHigh.style.display = 'none';
+        $('#amount').val('Medium');    
+        map.setPaintProperty('virginia-geo', 'fill-color', emissions_med_style); 
+    } else if (ui.value == 3) {
+        legendLow.style.display = 'none';
+        legendMed.style.display = 'none';
+        legendHigh.style.display = 'block';
+        $('#amount').val('High');
+        map.setPaintProperty('virginia-geo', 'fill-color', emissions_high_style);        
+    }
+});    
+
+// This is the style that is shown on the map when it first loads    
+map.on('load', function() { 
+    $('#amount').val('Low'); // default value of the slider
+    legendLow.style.display = 'block';
+    map.setPaintProperty('virginia-geo', 'fill-color', emissions_low_style); 
+    /*// This is how to add the emissions layer to mapbox in code
+    // Right now it is stored in our mapbox studio style
+    // Save for potential future use    
+    map.addSource('oregon_refactored', { // the name of the tileset in mapbox studio
+        'type': 'vector',
+        'url': 'mapbox://pmarster.5s2l6ke9' // the url of the mapbox studio tileset
+    });
+
+    map.addLayer({
+        'id': 'oregon-geo',
+        'type': 'fill',
+        'source': 'oregon_refactored',
+        'source-layer': 'oregon_refactored',
+        'paint': {
+            'fill-color': 'green'            
+        }
+    }, 'place-city-sm'); // Place polygon under these labels.*/
+});
+    
+// Listen for the `result` event from the MapboxGeocoder that is triggered when a user
+// the result returns the values from the geojson data matching the selection
+// modal bottomsheet opens displaying emissions information for selected zipcode    
+geocoder.on('result', function(ev) {
+    // Once the geocoder finds a result close the zip prompt
+    $('#modal2').modal('close');
+    map.once('zoomend', function() {
+        console.log('zoom');
+        var features = map.queryRenderedFeatures('virginia-geo');// replace this with the name of the layer
+        for (var i = 0; i < features.length; i++) {
+            var feature = features[i];
+            if (ev.result.text == feature.properties.GEOID10) { 
+                if ($('#amount').val() == 'Low') {
+                    var zipcode = feature.properties.GEOID10;
+                    var total_carb = feature.properties.Total_Carb;
+                    var electricity_emissions = feature.properties.Electricit;
+                    var cooking_emissions = feature.properties.Cooking_an;
+                    var trans_emissions = feature.properties.Transporta;
+                    var other_emissions = feature.properties.Other_Emis;
+                } else if ($('#amount').val() == 'Medium') {
+                    var zipcode = feature.properties.GEOID10;
+                    var total_carb = feature.properties.Total_Car2;
+                    var electricity_emissions = feature.properties.Electrici2;
+                    var cooking_emissions = feature.properties.Cooking_a2;
+                    var trans_emissions = feature.properties.Transport2;
+                    var other_emissions = feature.properties.Other_Emi2;
+                    
+                } else if ($('#amount').val() == 'High') {
+                    var zipcode = feature.properties.GEOID10;
+                    var total_carb = feature.properties.Total_Car3;
+                    var electricity_emissions = feature.properties.Electrici3;
+                    var cooking_emissions = feature.properties.Cooking_a3;
+                    var trans_emissions = feature.properties.Transport3;
+                    var other_emissions = feature.properties.Other_Emi3; 
+                }
+            }
+        }
+        $( "#slider-vertical" ).on( "slidechange", function( event, ui ) {
+            if (ui.value == 1) {
+                var features = map.queryRenderedFeatures('virginia-geo');// replace this with the name of the layer
+                for (var i = 0; i < features.length; i++) {
+                    var feature = features[i];
+                    if (ev.result.text == feature.properties.GEOID10) {   
+                        var zipcode = feature.properties.GEOID10;
+                        var total_carb = feature.properties.Total_Carb;
+                        var electricity_emissions = feature.properties.Electricit;
+                        var cooking_emissions = feature.properties.Cooking_an;
+                        var trans_emissions = feature.properties.Transporta;
+                        var other_emissions = feature.properties.Other_Emis;                
+                    } 
+                }
+                $('#zipcode').html(zipcode);
+                $('#totalcarb').html(total_carb);
+                $('#electricity').html(electricity_emissions);
+                $('#cooking').html(cooking_emissions);
+                $('#trans').html(trans_emissions);
+                $('#other').html(other_emissions);
+
+            } else if (ui.value == 2) {
+                console.log('query');
+                var features = map.queryRenderedFeatures('virginia-geo');// replace this with the name of the layer
+                for (var i = 0; i < features.length; i++) {
+                    var feature = features[i];
+                    if (ev.result.text == feature.properties.GEOID10) {   
+                        var zipcode = feature.properties.GEOID10;
+                        var total_carb = feature.properties.Total_Car2;
+                        var electricity_emissions = feature.properties.Electrici2;
+                        var cooking_emissions = feature.properties.Cooking_a2;
+                        var trans_emissions = feature.properties.Transport2;
+                        var other_emissions = feature.properties.Other_Emi2;                    
+
+                    }
+                }
+                $('#zipcode').html(zipcode);
+                $('#totalcarb').html(total_carb);
+                $('#electricity').html(electricity_emissions);
+                $('#cooking').html(cooking_emissions);
+                $('#trans').html(trans_emissions);
+                $('#other').html(other_emissions);
+
+            } else if (ui.value == 3) {
+                console.log('query3');
+                var features = map.queryRenderedFeatures('virginia-geo');// replace this with the name of the layer
+                for (var i = 0; i < features.length; i++) {
+                    var feature = features[i];
+                    if (ev.result.text == feature.properties.GEOID10) {   
+                        var zipcode = feature.properties.GEOID10;
+                        var total_carb = feature.properties.Total_Car3;
+                        var electricity_emissions = feature.properties.Electrici3;
+                        var cooking_emissions = feature.properties.Cooking_a3;
+                        var trans_emissions = feature.properties.Transport3;
+                        var other_emissions = feature.properties.Other_Emi3;                  
+
+                    } 
+                }
+                $('#zipcode').html(zipcode);
+                $('#totalcarb').html(total_carb);
+                $('#electricity').html(electricity_emissions);
+                $('#cooking').html(cooking_emissions);
+                $('#trans').html(trans_emissions);
+                $('#other').html(other_emissions);
+
+            }
+        });       
+        // pass variables containing the emission data to html elements
+        $('#zipcode').html(zipcode);
+        $('#totalcarb').html(total_carb);
+        $('#electricity').html(electricity_emissions);
+        $('#cooking').html(cooking_emissions);
+        $('#trans').html(trans_emissions);
+        $('#other').html(other_emissions); 
+    })
+    // Once the goecoder obtains a result and the features are queried 
+    // open the bottom sheet with the matching attributes
+    $('#modal1').modal(); 
+    $('#modal1').modal('open');        
+}); 
+
+</script>
+ <!--JavaScript at end of body for optimized loading-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+</html>
